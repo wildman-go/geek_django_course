@@ -1,6 +1,40 @@
 from django.contrib import admin
 from .models import Candidate
 from datetime import datetime
+from django.http import HttpResponse
+import csv
+
+exportable_fields = (
+    'username', 'city', 'phone', 'bachelor_school', 'master_school', 'degree', 'first_result', 'first_interviewer',
+    'second_result', 'second_interviewer', 'hr_result', 'hr_score', 'hr_remark', 'hr_interviewer')
+
+
+def export_model_as_csv(modeladmin, request, queryset):
+    response = HttpResponse(content_type='text/csv')
+    field_list = exportable_fields
+    response['Content-Disposition'] = 'attachment; filename=recruitment-candidates=%s.csv' % (
+        datetime.now().strftime('%Y-%m-%d-%H-%M-%S'),
+    )
+
+    # 写入表头
+    writer = csv.writer(response)
+    writer.writerow(
+        [queryset.model._meta.get_field(f).verbose_name.title() for f in field_list]
+    )
+    pass
+
+    # 将单行记录写入表中
+    for query in queryset:
+        csv_line_values = []
+        for field in field_list:
+            field_object = queryset.model._meta.get_field(field)
+            field_value = field_object.value_from_object(query)
+            csv_line_values.append(field_value)
+        writer.writerow(csv_line_values)
+    return response
+
+
+export_model_as_csv.short_description = r'导出为csv文件'
 
 
 # Register your models here.
@@ -11,6 +45,8 @@ class CandidateAdmin(admin.ModelAdmin):
         'username', 'city', 'bachelor_school', 'first_score', 'first_result', 'first_interviewer',
         'second_result', 'second_interviewer', 'hr_score', 'hr_result', 'last_editor'
     )
+    actions = [export_model_as_csv, ]
+
     # 添加可被搜索的字段
     search_fields = ('username', 'phone', 'email', 'bachelor_school')
 
