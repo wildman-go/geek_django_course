@@ -11,6 +11,16 @@ class CandidateAdmin(admin.ModelAdmin):
         'username', 'city', 'bachelor_school', 'first_score', 'first_result', 'first_interviewer',
         'second_result', 'second_interviewer', 'hr_score', 'hr_result', 'last_editor'
     )
+    # 添加可被搜索的字段
+    search_fields = ('username', 'phone', 'email', 'bachelor_school')
+
+    # 添加可被筛选的字段
+    list_filter = ('city', 'first_result', 'second_result', 'hr_result',
+                   'first_interviewer', 'second_interviewer', 'hr_interviewer')
+
+    # 添加可排序的字段
+    ordering = ('hr_result', 'second_result', 'first_result')
+
     fieldsets = (
         (None, {'fields': (
             'userid', ('username', 'city', 'phone'), ('email', 'apply_position', 'born_address'),
