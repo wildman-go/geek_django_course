@@ -26,4 +26,4 @@ class Command(BaseCommand):
                     test_score_of_general_ability=row[6],
                     paper_score=row[7],
                 )
-                print(candidate + ' has been writen to db')
+                print(candidate)
