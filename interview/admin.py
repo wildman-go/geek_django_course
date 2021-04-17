@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Candidate
+from datetime import datetime
 
 
 # Register your models here.
@@ -32,6 +33,13 @@ class CandidateAdmin(admin.ModelAdmin):
             'hr_advantage', 'hr_disadvantage', ('hr_result', 'hr_interviewer'), 'hr_remark',
         )}),
     )
+
+    def save_model(self, request, obj, form, change):
+        obj.last_editor = request.user.username
+        if not obj.creator:
+            obj.creator = request.user.username
+        obj.modified_date = datetime.now()
+        obj.save()
 
 
 admin.site.register(Candidate, CandidateAdmin)
