@@ -3,6 +3,9 @@ from .models import Candidate
 from datetime import datetime
 from django.http import HttpResponse
 import csv
+import logging
+
+logger = logging.getLogger(__name__)
 
 exportable_fields = (
     'username', 'city', 'phone', 'bachelor_school', 'master_school', 'degree', 'first_result', 'first_interviewer',
@@ -31,6 +34,7 @@ def export_model_as_csv(modeladmin, request, queryset):
             field_value = field_object.value_from_object(query)
             csv_line_values.append(field_value)
         writer.writerow(csv_line_values)
+    logger.info('%s exported %s candidate records.' % (request.user.username, len(queryset)))
     return response
 
 
