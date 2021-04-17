@@ -1,0 +1,5 @@
+这是学geektime的django课程时，按照老师的节奏照着老师的demo敲的django项目
+
+每一个commit对应着一个小小的知识点
+
+方便今后自己开发django时，按照commit查询使用
