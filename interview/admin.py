@@ -3,6 +3,7 @@ from .models import Candidate
 from datetime import datetime
 from django.http import HttpResponse
 from interview import candidate_fieldset as cf
+from django.db.models import Q
 
 import csv
 import logging
@@ -68,6 +69,15 @@ class CandidateAdmin(admin.ModelAdmin):
         for g in user.groups.all():
             group_name.append(g.name)
         return group_name
+
+    # 对于非管理员，非HR，获取自己是一面或二面面试官的候选人集合
+    def get_queryset(self, request):
+        qs = super(CandidateAdmin, self).get_queryset(request)
+        group_names = self.get_group_names(request.user)
+        if request.user.is_superuser or 'hr' in group_names:
+            return qs
+        return Candidate.objects.filter(
+            Q(first_interviewer_user=request.user) | Q(second_interviewer_user=request.user))
 
     # 设置 面试官只读/hr可编辑 的字段
     def get_readonly_fields(self, request, obj=None):
