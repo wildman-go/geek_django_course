@@ -2,8 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.template import loader
 
-from .models import Job
+from .models import Job, Resume
 from .models import JobTypes, Cities
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import CreateView
 
 
 # Create your views here.
@@ -24,3 +27,14 @@ def detail(request, job_id):
     except Job.DoesNotExist:
         raise Http404
     return render(request, 'job.html', {'job': job})
+
+
+class ResumeCreateView(LoginRequiredMixin, CreateView):
+    """创建简历页面"""
+    template_name = 'resume_form.html'
+    success_url = '/joblist/'
+    model = Resume
+    fields = ['username', 'city', 'phone',
+              'email', 'apply_position', 'born_address', 'gender',
+              'bachelor_school', 'master_school', 'major', 'degree',
+              'candidate_introduction', 'work_experience', 'project_experience']
