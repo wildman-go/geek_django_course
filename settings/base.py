@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_REDIRECT_URL = '/'  # 登录成功跳转到首页
+SIMPLE_BACKEND_REDIRECT_URL = '/accounts/login'  # 注册完跳转到登录页
+
 # Application definition
 
 INSTALLED_APPS = [
