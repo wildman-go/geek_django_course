@@ -61,8 +61,19 @@ class CandidateAdmin(admin.ModelAdmin):
     # 添加可排序的字段
     ordering = ('hr_result', 'second_result', 'first_result')
 
-    # 设置只读字段
-    readonly_fields = ('first_interviewer_user', 'second_interviewer_user')
+    def get_group_names(self, user):
+        group_name = []
+        for g in user.groups.all():
+            group_name.append(g.name)
+        return group_name
+
+    # 设置 面试官只读/hr可编辑 的字段
+    def get_readonly_fields(self, request, obj=None):
+        group_names = self.get_group_names(request.user)
+        if 'interviewer' in group_names:
+            logger.info("interviewer is in user's group for %s" % request.user.username)
+            return ('first_interviewer_user', 'second_interviewer_user')
+        return ()
 
     fieldsets = (
         (None, {'fields': (
@@ -71,7 +82,8 @@ class CandidateAdmin(admin.ModelAdmin):
             ('test_score_of_general_ability', 'degree'), 'paper_score', 'last_editor')}),
         ('第一轮面试记录', {'fields': (
             ('first_score', 'first_learning_ability', 'first_professional_competency'), 'first_advantage',
-            'first_disadvantage', ('first_result', 'first_recommend_position', 'first_interviewer_user'), 'first_remark',
+            'first_disadvantage', ('first_result', 'first_recommend_position', 'first_interviewer_user'),
+            'first_remark',
 
         )}),
         ('第二轮面试记录', {'fields': (
