@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'interview.performance.performance_logger_middleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -144,6 +145,12 @@ LOGGING = {
             'formatter': 'simple',
             'filename': os.path.join(os.path.dirname(BASE_DIR), 'recruitment.admin.log')
         },
+        'performance': {
+            'class': 'logging.FileHandler',
+            'formatter': 'simple',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), 'recruitment.performance.log'),
+        },
+
     },
     'root': {
         'handlers': ['console', 'file'],
@@ -153,6 +160,11 @@ LOGGING = {
         'django_python3': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
+        },
+        'interview.performance': {
+            'handlers': ['console', 'performance'],
+            'level': 'INFO',
+            'propagate': False,
         }
     }
 }
