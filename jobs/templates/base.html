@@ -3,6 +3,8 @@
 {# load the tag library #}
 {% load bootstrap4 %}
 
+{% load i18n %}
+
 {# load Css and JavaScript #}
 {% bootstrap_css %}
 {% bootstrap_javascript jquery='full' %}
@@ -10,24 +12,24 @@
 {# Display django.contrib.messages as Bootstrap alerts #}
 {% bootstrap_messages %}
 
-<h1 style="margin:auto;width:50%;">匠果科技开发职位</h1>
+<h1 style="margin:auto;width:50%;">{% translate "匠果科技开发职位" %}</h1>
 <p></p>
 <hr>
 
 {% block header %}
-<a href="/" style="text-decoration:none;color:#807bff">首页</a>
-<a href="/joblist" style="text-decoration:none;color:#807bff">职位列表</a>
+<a href="/" style="text-decoration:none;color:#807bff">{% translate "首页" %}</a>
+<a href="/joblist" style="text-decoration:none;color:#807bff">{% translate "职位列表" %}</a>
 
 {% if user.is_authenticated%}
-<a href="/accounts/logout" style="text-decoration:none;color:#807bff">退出</a>
+<a href="/accounts/logout" style="text-decoration:none;color:#807bff">{% translate "退出" %}</a>
 {% else%}
-<a href="/accounts/login" style="text-decoration:none;color:#807bff">登录</a>
+<a href="/accounts/login" style="text-decoration:none;color:#807bff">{% translate "登录" %}</a>
 {% endif%}
 
 {% if user.is_authenticated%}
-<p>终于等到你 {{user.username}}，期待加入我们，用科技探索未来。</p>
+<p>{% blocktranslate with user_name=user.username %}终于等到你 {{user_name}}，期待加入我们，用科技探索未来。{% endblocktranslate %}</p>
 {% else %}
-<p>欢迎你，期待加入我们，登录后可提交简历</p>
+<p>{% translate "欢迎你，期待加入我们，登录后可提交简历" %}</p>
 {% endif%}
 
 {% endblock%}
