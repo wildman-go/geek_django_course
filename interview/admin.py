@@ -4,6 +4,8 @@ from datetime import datetime
 from django.http import HttpResponse
 from interview import candidate_fieldset as cf
 from django.db.models import Q
+from jobs.models import Resume
+from django.utils.safestring import mark_safe
 
 import csv
 import logging
@@ -50,10 +52,22 @@ export_model_as_csv.allowed_permissions = ('export',)
 class CandidateAdmin(admin.ModelAdmin):
     exclude = ('creator', 'created_date', 'modified_date')
     list_display = (
-        'username', 'city', 'bachelor_school', 'first_score', 'first_result', 'first_interviewer_user',
+        'username', 'city', 'get_resume', 'bachelor_school', 'first_score', 'first_result', 'first_interviewer_user',
         'second_result', 'second_interviewer_user', 'hr_score', 'hr_result', 'last_editor'
     )
     actions = [export_model_as_csv, ]
+
+    # 定义查看简历的button
+    def get_resume(self, obj):
+        if not obj.phone:
+            return ""
+        resume = Resume.objects.filter(phone=obj.phone)
+        if resume and len(resume) > 0:
+            return mark_safe(r'<a href="/resume/%s" target="_blank">%s</a>' % (resume[0].id, '查看简历'))
+        return ""
+
+    get_resume.short_description = "查看简历"  # 定义列名
+    get_resume.allow_tags = True  #
 
     # 判断当前用户是否有导出csv的权限
     def has_export_permission(self, request):
