@@ -2,6 +2,8 @@ from django.contrib import admin
 from .models import Candidate
 from datetime import datetime
 from django.http import HttpResponse
+from interview import candidate_fieldset as cf
+
 import csv
 import logging
 
@@ -86,29 +88,14 @@ class CandidateAdmin(admin.ModelAdmin):
         self.list_editable = self.get_list_editable(request)
         return super(CandidateAdmin, self).get_changelist_instance(request)
 
-    fieldsets = (
-        (None, {'fields': (
-            'userid', ('username', 'city', 'phone'), ('email', 'apply_position', 'born_address'),
-            ('gender', 'candidate_remark'), ('bachelor_school', 'master_school', 'doctor_school'), 'major',
-            ('test_score_of_general_ability', 'degree'), 'paper_score', 'last_editor')}),
-        ('第一轮面试记录', {'fields': (
-            ('first_score', 'first_learning_ability', 'first_professional_competency'), 'first_advantage',
-            'first_disadvantage', ('first_result', 'first_recommend_position', 'first_interviewer_user'),
-            'first_remark',
-
-        )}),
-        ('第二轮面试记录', {'fields': (
-            ('second_score', 'second_learning_ability', 'second_professional_competency'),
-            ('second_pursue_of_excellence', 'second_communication_ability', 'second_pressure_score'),
-            'second_advantage', 'second_disadvantage',
-            ('second_result', 'second_recommend_position', 'second_interviewer_user'), 'second_remark',
-        )}),
-        ('第三轮面试记录', {'fields': (
-            ('hr_score', 'hr_responsibility', 'hr_communication_ability'),
-            ('hr_logic_ability', 'hr_potential', 'hr_stability'),
-            'hr_advantage', 'hr_disadvantage', ('hr_result', 'hr_interviewer_user'), 'hr_remark',
-        )}),
-    )
+    # 在候选人编辑页，一面面试官只能看到一面成绩，二面面试官只能看到二面成绩
+    def get_fieldsets(self, request, obj=None):
+        group_names = self.get_group_names(request.user)
+        if 'interviewer' in group_names and obj.first_interviewer_user == request.user:
+            return cf.default_fieldsets_first
+        if 'interviewer' in group_names and obj.second_interviewer_user == request.user:
+            return cf.default_fieldsets_second
+        return cf.default_fieldsets
 
     def save_model(self, request, obj, form, change):
         obj.last_editor = request.user.username
