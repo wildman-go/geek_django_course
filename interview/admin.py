@@ -42,6 +42,7 @@ def export_model_as_csv(modeladmin, request, queryset):
 
 
 export_model_as_csv.short_description = r'导出为csv文件'
+export_model_as_csv.allowed_permissions = ('export',)
 
 
 # Register your models here.
@@ -53,6 +54,11 @@ class CandidateAdmin(admin.ModelAdmin):
         'second_result', 'second_interviewer_user', 'hr_score', 'hr_result', 'last_editor'
     )
     actions = [export_model_as_csv, ]
+
+    # 判断当前用户是否有导出csv的权限
+    def has_export_permission(self, request):
+        opts = self.opts
+        return request.usr.has_perm('%s.%s' % (opts.app_label, 'export'))
 
     # 添加可被搜索的字段
     search_fields = ('username', 'phone', 'email', 'bachelor_school')
