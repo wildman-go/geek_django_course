@@ -75,6 +75,17 @@ class CandidateAdmin(admin.ModelAdmin):
             return ('first_interviewer_user', 'second_interviewer_user')
         return ()
 
+    # 设置 在候选人列表页，hr可编辑/面试官只读 的字段
+    def get_list_editable(self, request):
+        group_names = self.get_group_names(request.user)
+        if request.user.is_superuser or 'hr' in group_names:
+            return ('first_interviewer_user', 'second_interviewer_user')
+        return ()
+
+    def get_changelist_instance(self, request):
+        self.list_editable = self.get_list_editable(request)
+        return super(CandidateAdmin, self).get_changelist_instance(request)
+
     fieldsets = (
         (None, {'fields': (
             'userid', ('username', 'city', 'phone'), ('email', 'apply_position', 'born_address'),
