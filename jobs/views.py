@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import loader
 
 from .models import Job, Resume
@@ -38,3 +38,17 @@ class ResumeCreateView(LoginRequiredMixin, CreateView):
               'email', 'apply_position', 'born_address', 'gender',
               'bachelor_school', 'master_school', 'major', 'degree',
               'candidate_introduction', 'work_experience', 'project_experience']
+
+    # 从url请求参数带入默认值
+    def get_initial(self):
+        initial = {}
+        for x in self.request.GET:
+            initial[x] = self.request.GET[x]
+        return initial
+
+    # 在验证表单的方法里，将简历与当前用户关联
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.applicant = self.request.user
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
