@@ -7,6 +7,7 @@ from .models import JobTypes, Cities
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
+from django.views.generic.detail import DetailView
 
 
 # Create your views here.
@@ -52,3 +53,9 @@ class ResumeCreateView(LoginRequiredMixin, CreateView):
         self.object.applicant = self.request.user
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
+
+
+class ResumeDetailView(DetailView):
+    """简历详情页"""
+    template_name = 'resume_detail.html'
+    model = Resume
