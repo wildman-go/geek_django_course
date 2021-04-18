@@ -61,6 +61,9 @@ class CandidateAdmin(admin.ModelAdmin):
     # 添加可排序的字段
     ordering = ('hr_result', 'second_result', 'first_result')
 
+    # 设置只读字段
+    readonly_fields = ('first_interviewer_user', 'second_interviewer_user')
+
     fieldsets = (
         (None, {'fields': (
             'userid', ('username', 'city', 'phone'), ('email', 'apply_position', 'born_address'),
