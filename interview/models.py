@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # 第一轮面试结果
 FIRST_INTERVIEW_RESULT_TYPE = [('建议复试', '建议复试'), ('待定', '待定'), ('放弃', '放弃'), ]
@@ -49,7 +50,8 @@ class Candidate(models.Model):
     first_result = models.CharField(max_length=256,
                                     choices=FIRST_INTERVIEW_RESULT_TYPE, blank=True, verbose_name=r'初试结果')
     first_recommend_position = models.CharField(max_length=256, blank=True, verbose_name=r'推荐部门')
-    first_interviewer = models.CharField(max_length=256, blank=True, verbose_name=r'面试官')
+    first_interviewer_user = models.ForeignKey(User, related_name=r'first_interviewer_user', blank=True, null=True,
+                                               on_delete=models.CASCADE, verbose_name=r'一面面试官')
     first_remark = models.CharField(max_length=135, blank=True, verbose_name=r'初试备注')
 
     # 第二轮面试记录
@@ -70,7 +72,8 @@ class Candidate(models.Model):
     second_result = models.CharField(max_length=256,
                                      choices=INTERVIEW_RESULT_TYPE, blank=True, verbose_name=r'专业复试结果')
     second_recommend_position = models.CharField(max_length=256, blank=True, verbose_name=r'建议方向或推荐部门')
-    second_interviewer = models.CharField(max_length=256, blank=True, verbose_name=r'面试官')
+    second_interviewer_user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE,
+                                                related_name=r'second_interviewer_user', verbose_name=r'二面面试官')
     second_remark = models.CharField(max_length=135, blank=True, verbose_name=r'专业复试备注')
 
     # hr终面
@@ -86,7 +89,8 @@ class Candidate(models.Model):
     hr_disadvantage = models.TextField(max_length=1024, blank=True, verbose_name=r'顾虑和不足')
     hr_result = models.CharField(max_length=256,
                                  choices=INTERVIEW_RESULT_TYPE, blank=True, verbose_name=r'HR复试结果')
-    hr_interviewer = models.CharField(max_length=256, blank=True, verbose_name=r'HR面试官')
+    hr_interviewer_user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE,
+                                            related_name=r'hr_interviewer_user', verbose_name=r'HR面试官')
     hr_remark = models.CharField(max_length=135, blank=True, verbose_name=r'HR复试备注')
 
     creator = models.CharField(max_length=256, blank=True, verbose_name=r'候选人数据的创建人')

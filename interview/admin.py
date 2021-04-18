@@ -8,8 +8,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 exportable_fields = (
-    'username', 'city', 'phone', 'bachelor_school', 'master_school', 'degree', 'first_result', 'first_interviewer',
-    'second_result', 'second_interviewer', 'hr_result', 'hr_score', 'hr_remark', 'hr_interviewer')
+    'username', 'city', 'phone', 'bachelor_school', 'master_school', 'degree', 'first_result', 'first_interviewer_user',
+    'second_result', 'second_interviewer_user', 'hr_result', 'hr_score', 'hr_remark', 'hr_interviewer_user')
 
 
 def export_model_as_csv(modeladmin, request, queryset):
@@ -46,8 +46,8 @@ export_model_as_csv.short_description = r'导出为csv文件'
 class CandidateAdmin(admin.ModelAdmin):
     exclude = ('creator', 'created_date', 'modified_date')
     list_display = (
-        'username', 'city', 'bachelor_school', 'first_score', 'first_result', 'first_interviewer',
-        'second_result', 'second_interviewer', 'hr_score', 'hr_result', 'last_editor'
+        'username', 'city', 'bachelor_school', 'first_score', 'first_result', 'first_interviewer_user',
+        'second_result', 'second_interviewer_user', 'hr_score', 'hr_result', 'last_editor'
     )
     actions = [export_model_as_csv, ]
 
@@ -56,7 +56,7 @@ class CandidateAdmin(admin.ModelAdmin):
 
     # 添加可被筛选的字段
     list_filter = ('city', 'first_result', 'second_result', 'hr_result',
-                   'first_interviewer', 'second_interviewer', 'hr_interviewer')
+                   'first_interviewer_user', 'second_interviewer_user', 'hr_interviewer_user')
 
     # 添加可排序的字段
     ordering = ('hr_result', 'second_result', 'first_result')
@@ -68,19 +68,19 @@ class CandidateAdmin(admin.ModelAdmin):
             ('test_score_of_general_ability', 'degree'), 'paper_score', 'last_editor')}),
         ('第一轮面试记录', {'fields': (
             ('first_score', 'first_learning_ability', 'first_professional_competency'), 'first_advantage',
-            'first_disadvantage', ('first_result', 'first_recommend_position', 'first_interviewer'), 'first_remark',
+            'first_disadvantage', ('first_result', 'first_recommend_position', 'first_interviewer_user'), 'first_remark',
 
         )}),
         ('第二轮面试记录', {'fields': (
             ('second_score', 'second_learning_ability', 'second_professional_competency'),
             ('second_pursue_of_excellence', 'second_communication_ability', 'second_pressure_score'),
             'second_advantage', 'second_disadvantage',
-            ('second_result', 'second_recommend_position', 'second_interviewer'), 'second_remark',
+            ('second_result', 'second_recommend_position', 'second_interviewer_user'), 'second_remark',
         )}),
         ('第三轮面试记录', {'fields': (
             ('hr_score', 'hr_responsibility', 'hr_communication_ability'),
             ('hr_logic_ability', 'hr_potential', 'hr_stability'),
-            'hr_advantage', 'hr_disadvantage', ('hr_result', 'hr_interviewer'), 'hr_remark',
+            'hr_advantage', 'hr_disadvantage', ('hr_result', 'hr_interviewer_user'), 'hr_remark',
         )}),
     )
 
