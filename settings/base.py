@@ -34,6 +34,7 @@ SIMPLE_BACKEND_REDIRECT_URL = '/accounts/login'  # 注册完跳转到登录页
 
 INSTALLED_APPS = [
     'grappelli',
+    'bootstrap4',
     'registration',
     'django.contrib.admin',
     'django.contrib.auth',
