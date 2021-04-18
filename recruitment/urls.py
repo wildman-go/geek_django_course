@@ -23,7 +23,9 @@ urlpatterns = [
     url(r"^", include("jobs.urls")),
     path('grappelli/', include('grappelli.urls')),
     path('admin/', admin.site.urls),
-    url(r'^accounts/', include('registration.backends.simple.urls'))
+    url(r'^accounts/', include('registration.backends.simple.urls')),
+
+    path('i18n/', include('django.conf.urls.i18n')),
 ]
 
 admin.site.site_header = _("匠果科技招聘管理系统")
