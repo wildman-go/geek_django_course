@@ -58,7 +58,7 @@ class CandidateAdmin(admin.ModelAdmin):
     # 判断当前用户是否有导出csv的权限
     def has_export_permission(self, request):
         opts = self.opts
-        return request.usr.has_perm('%s.%s' % (opts.app_label, 'export'))
+        return request.user.has_perm('%s.%s' % (opts.app_label, 'export'))
 
     # 添加可被搜索的字段
     search_fields = ('username', 'phone', 'email', 'bachelor_school')
